@@ -17,11 +17,7 @@ if [ "$role" = "app" ] || [ "$role" = "queue" ] || [ "$role" = "scheduler" ]; th
     echo "MySQL is ready!"
 fi
 
-# Install composer dependencies if vendor directory doesn't exist
-if [ ! -d "vendor" ]; then
-    echo "Installing composer dependencies..."
-    composer install --no-interaction --prefer-dist --optimize-autoloader
-fi
+
 
 # Run migrations only for app role
 if [ "$role" = "app" ]; then
