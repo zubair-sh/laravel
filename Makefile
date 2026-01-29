@@ -120,7 +120,7 @@ seed: ## Run database seeders
 	@echo '$(GREEN)✓ Database seeded$(NC)'
 
 test: ## Run tests
-	@docker-compose -f $(COMPOSE_FILE) exec app php artisan test
+	@docker-compose -f $(COMPOSE_FILE) exec -e APP_ENV=testing app php artisan test
 
 cache-clear: ## Clear all caches
 	@docker-compose -f $(COMPOSE_FILE) exec app php artisan cache:clear
