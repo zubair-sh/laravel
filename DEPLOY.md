@@ -51,6 +51,12 @@ cd /var/www/laravel
 git clone git@github.com:zubair-sh/laravel.git .
 # Or HTTPS: git clone https://github.com/zubair-sh/laravel.git .
 
+# ⚠️ CRITICAL: Configure Environment Variables
+# Create the .env.production file with your ACTUAL secrets (database passwords, etc.)
+# If you don't do this, the database will initialize with default/wrong passwords!
+nano .env.production
+# Paste the content that matches your ENV_PRODUCTION GitHub secret.
+
 # First time setup
 make init ENV=production
 ```
@@ -110,6 +116,17 @@ make deploy ENV=production
 ```
 
 ## 4. Troubleshooting
+
+**Docker Permission Denied**
+
+If you see `permission denied while trying to connect to the Docker daemon socket` or `unable to get image`:
+
+1.  Ensure you added your user to the docker group:
+    ```bash
+    sudo usermod -aG docker $USER
+    ```
+2.  **Crucial:** You must **log out and log back in** for this to apply.
+3.  **Quick Fix:** Run `newgrp docker` to apply the changes in your current terminal session immediately.
 
 **Logs**
 
