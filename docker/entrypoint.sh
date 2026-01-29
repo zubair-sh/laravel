@@ -25,8 +25,9 @@ fi
 
 # Run migrations only for app role
 if [ "$role" = "app" ]; then
-    echo "Running migrations..."
-    php artisan migrate --force || true
+    # Migrations are handled by the deployment pipeline (Makefile/CI)
+    # echo "Running migrations..."
+    # php artisan migrate --force || true
 
     echo "Clearing cache..."
     php artisan config:clear
