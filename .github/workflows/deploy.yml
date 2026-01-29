@@ -31,7 +31,8 @@ jobs:
           node-version: "20"
 
       - name: Copy .env
-        run: cp .env.development src/.env
+        run: |
+          cp src/.env.example src/.env
 
       - name: Install Composer Dependencies
         working-directory: ./src
@@ -56,6 +57,8 @@ jobs:
       - name: Execute Tests (Unit and Feature)
         working-directory: ./src
         env:
+          APP_ENV: testing
+          APP_KEY: base64:WybVaK6ylbaN5j/SR9EQ3GTVTQJmTYMl6uABpzFhtBw=
           DB_CONNECTION: sqlite
           DB_DATABASE: ":memory:"
         run: php artisan test
@@ -63,3 +66,37 @@ jobs:
       - name: Run Pint (Code Style)
         working-directory: ./src
         run: ./vendor/bin/pint --test
+
+  deploy-staging:
+    needs: laravel-tests
+    if: github.ref == 'refs/heads/develop' # Assuming develop branch for staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Staging EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            cd /var/www/laravel # Update with your path
+            git pull origin develop
+            echo "${{ secrets.ENV_STAGING }}" > .env.staging
+            make deploy ENV=staging
+
+  deploy-production:
+    needs: laravel-tests
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Production EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            cd /var/www/laravel # Update with your path
+            git pull origin main
+            echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
+            make deploy ENV=production
