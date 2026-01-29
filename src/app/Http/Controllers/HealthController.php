@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Log;
 
 class HealthController extends Controller
 {
     public function __invoke(Request $request)
     {
+        Log::info('Health check requested', ['ip' => $request->ip()]);
+
         $status = [
             'status' => 'ok',
             'timestamp' => now()->toIso8601String(),
