@@ -99,4 +99,4 @@ jobs:
             cd /var/www/laravel # Update with your path
             git pull origin main
             echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
-            make deploy ENV=production
+            # make deploy ENV=production

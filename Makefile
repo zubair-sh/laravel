@@ -57,8 +57,8 @@ init: ## Initialize project (creates Laravel app, starts containers, runs migrat
 	fi
 	@echo '$(YELLOW)Building and starting containers...$(NC)'
 	@docker compose -f $(COMPOSE_FILE) up -d --build
-	@echo '$(YELLOW)Waiting for services to be ready...$(NC)'
-	@sleep 10
+	@echo '$(YELLOW)Waiting for services to be ready (30s)...$(NC)'
+	@sleep 30
 	@if [ ! -d "src/vendor" ]; then \
 		echo '$(YELLOW)Installing dependencies...$(NC)'; \
 		docker compose -f $(COMPOSE_FILE) exec -T app composer install --no-interaction --prefer-dist --optimize-autoloader; \
