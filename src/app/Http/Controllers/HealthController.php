@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 
 class HealthController extends Controller
 {
@@ -19,7 +19,7 @@ class HealthController extends Controller
             'services' => [
                 'database' => 'unknown',
                 'redis' => 'unknown',
-            ]
+            ],
         ];
 
         // Check Database
@@ -28,7 +28,7 @@ class HealthController extends Controller
             $status['services']['database'] = 'ok';
         } catch (\Exception $e) {
             $status['status'] = 'error';
-            $status['services']['database'] = 'error: ' . $e->getMessage();
+            $status['services']['database'] = 'error: '.$e->getMessage();
         }
 
         // Check Redis
@@ -37,7 +37,7 @@ class HealthController extends Controller
             $status['services']['redis'] = 'ok';
         } catch (\Exception $e) {
             $status['status'] = 'error';
-            $status['services']['redis'] = 'error: ' . $e->getMessage();
+            $status['services']['redis'] = 'error: '.$e->getMessage();
         }
 
         $httpStatus = $status['status'] === 'ok' ? 200 : 503;
