@@ -33,8 +33,8 @@ if [ "$role" = "app" ]; then
     php artisan cache:clear
     php artisan view:clear
 
-    if [ "$env" != "production" ]; then
-        echo "Caching configuration for non-production..."
+    if [ "$env" = "production" ]; then
+        echo "Caching configuration for production..."
         php artisan config:cache
     fi
 fi

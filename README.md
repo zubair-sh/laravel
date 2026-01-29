@@ -69,7 +69,7 @@ make help            # Show all commands
 
 ## Services
 
-- **PHP 8.2-FPM** - Application server
+- **PHP 8.4-FPM** - Application server
 - **Nginx** - Web server
 - **MySQL 8.0** - Database
 - **Redis** - Cache & Queue
