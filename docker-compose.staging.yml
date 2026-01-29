@@ -1,0 +1,110 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        - APP_ENV=staging
+    container_name: laravel-app-staging
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./src:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - laravel
+    environment:
+      - APP_ENV=staging
+      - CONTAINER_ROLE=app
+
+  nginx:
+    image: nginx:alpine
+    container_name: laravel-nginx-staging
+    restart: unless-stopped
+    ports:
+      - "8001:80"
+    volumes:
+      - ./src:/var/www
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - laravel
+    depends_on:
+      - app
+
+  mysql:
+    image: mysql:8.0
+    container_name: laravel-mysql-staging
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - laravel
+
+  redis:
+    image: redis:alpine
+    container_name: laravel-redis-staging
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - laravel
+
+  queue:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        - APP_ENV=staging
+    container_name: laravel-queue-staging
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./src:/var/www
+    networks:
+      - laravel
+    environment:
+      - APP_ENV=staging
+      - CONTAINER_ROLE=queue
+    depends_on:
+      - app
+      - mysql
+      - redis
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        - APP_ENV=staging
+    container_name: laravel-scheduler-staging
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./src:/var/www
+    networks:
+      - laravel
+    environment:
+      - APP_ENV=staging
+      - CONTAINER_ROLE=scheduler
+    depends_on:
+      - app
+      - mysql
+      - redis
+
+networks:
+  laravel:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local

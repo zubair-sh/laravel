@@ -1,0 +1,22 @@
+# Docker
+docker-compose.override.yml
+.env
+
+# Environment templates (actual .env is in src/)
+.env.development
+.env.staging
+.env.production
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backups directory
+/backups
