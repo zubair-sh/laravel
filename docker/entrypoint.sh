@@ -29,14 +29,18 @@ if [ "$role" = "app" ]; then
     # echo "Running migrations..."
     # php artisan migrate --force || true
 
-    echo "Clearing cache..."
-    php artisan config:clear
-    php artisan cache:clear
-    php artisan view:clear
+    if [ -f "vendor/autoload.php" ]; then
+        echo "Clearing cache..."
+        php artisan config:clear
+        php artisan cache:clear
+        php artisan view:clear
 
-    if [ "$env" = "production" ]; then
-        echo "Caching configuration for production..."
-        php artisan config:cache
+        if [ "$env" = "production" ]; then
+            echo "Caching configuration for production..."
+            php artisan config:cache
+        fi
+    else
+        echo "Vendor directory missing (first run?), skipping cache commands..."
     fi
 fi
 
